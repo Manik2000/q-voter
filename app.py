@@ -16,7 +16,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets, assets_fold
 server = app.server
 
 
-interval_time = 1*150
+interval_time = 300
 fig = go.Figure(data=go.Heatmap(z=random_lattice(25), zmin=-1, zmax=1, showscale=False,
                                 colorscale=[
                                     [0, "rgb(0, 21, 79)"],
