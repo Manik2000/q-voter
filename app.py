@@ -16,7 +16,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets, assets_fold
 server = app.server
 
 
-interval_time = 1*250
+interval_time = 1*400
 fig = go.Figure(data=go.Heatmap(z=random_lattice(25), showscale=False,
                                 colorscale=[
                                     [0, "rgb(0, 21, 79)"],
@@ -54,8 +54,9 @@ fig2.update_layout(
     yaxis_title="mean value of spins",
     template="seaborn"
 )
-fig2.update_xaxes(
-    constrain="domain",
+
+fig2.update_yaxes(
+    range=[-1, 1]
 )
 
 app.layout = html.Div(id="page", children=[
@@ -142,7 +143,7 @@ def update_interval(n):
 
 
 @app.callback(Output('graph', 'extendData'),
-              Output('graph2', 'figure'),
+              Output('graph2', 'extendData'),
               Output('data', 'data'),
               Input('run', 'n_clicks'),
               Input('setup', 'n_clicks'),
@@ -179,21 +180,11 @@ def update_data(n1, n2, k, lattice, nonconformity, drawings, N, q, p, f, data):
     button_id = ctx.triggered[0]['prop_id'].split('.')[0]
     data1, X, Y = data
     if button_id == "setup":
-        X = [0]
-        Y = [0]
+        X = list([0])
+        Y = list([0])
         func = lattices[lattice]
         data2 = func(N)
-        data3 = go.Scatter(
-            x=list(X),
-            y=list(Y),
-            name='Scatter',
-            mode='lines+markers'
-        )
-        layout = go.Layout(
-            xaxis=dict(range=[min(X), max(X)]),
-            yaxis=dict(range=[min(Y), max(Y)])
-        )
-        return (dict(z=[data2]), 0, N), {'data': [data3], 'layout': layout}, (data2, X, Y)
+        return (dict(z=[data2]), 0, N), (dict(x=[[0]], y=[[0]]), [0], len(X)), (data2, X, Y)
     if nonconformity == 0:
         data_2 = independence(data1, N, drawings, q, p, f)
     else:
@@ -201,17 +192,7 @@ def update_data(n1, n2, k, lattice, nonconformity, drawings, N, q, p, f, data):
     num = np.mean(data_2)
     X.append(X[-1]+1)
     Y.append(num)
-    new_data = go.Scatter(
-            x=list(X),
-            y=list(Y),
-            name='Scatter',
-            mode='lines+markers'
-        )
-    layout = go.Layout(
-        xaxis=dict(range=[min(X), max(X)]),
-        yaxis=dict(range=[min(Y), max(Y)])
-    )
-    return (dict(z=[data_2]), 0, N), {'data': [new_data], 'layout': layout}, (data_2, X, Y)
+    return (dict(z=[data_2]), 0, N), (dict(x=[[X[-1]+1]], y=[[num]]), [0], len(X)), (data_2, X, Y)
 
 
 if __name__ == "__main__":
