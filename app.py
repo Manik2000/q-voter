@@ -6,18 +6,18 @@ import numpy as np
 from dash.dependencies import Output, Input, State
 from simulation import independence, anti_conformity
 from dash.exceptions import PreventUpdate
-from lattices import circle, diagonal_stripes, chessboard, random_lattice, two_stripes
+from lattices import circle, diagonal_stripes, chessboard, random_lattice, two_stripes, solid, ring
 
 
-lattices = [two_stripes, diagonal_stripes, chessboard, circle, random_lattice]
+lattices = [two_stripes, diagonal_stripes, chessboard, circle, random_lattice, ring, solid]
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, assets_folder="assets", update_title=None)
 server = app.server
 
 
-interval_time = 1*400
-fig = go.Figure(data=go.Heatmap(z=random_lattice(25), showscale=False,
+interval_time = 1*150
+fig = go.Figure(data=go.Heatmap(z=random_lattice(25), zmin=-1, zmax=1, showscale=False,
                                 colorscale=[
                                     [0, "rgb(0, 21, 79)"],
                                     [0.5, "rgb(0, 21, 79)"],
@@ -46,18 +46,24 @@ fig.update_layout(
 )
 
 
-fig2 = go.Figure(data=go.Scatter(x=[0],  y=[0]))
+fig2 = go.Figure(data=go.Scatter(x=[0],  y=[0], line_color="rgb(250, 140, 80)"))
 
 fig2.update_layout(
     title="Average opinion over time",
-    xaxis_title="time",
+    xaxis_title="time [MCS]",
     yaxis_title="mean value of spins",
     template="seaborn"
 )
 
 fig2.update_yaxes(
-    range=[-1, 1]
+    range=[-1, 1],
+    zeroline=True,
+    zerolinewidth=1.5,
+    zerolinecolor='DarkBlue'
 )
+fig2.update_xaxes(zeroline=True,
+                  zerolinewidth=1.5,
+                  zerolinecolor='DarkBlue')
 
 app.layout = html.Div(id="page", children=[
         html.Div(
@@ -106,25 +112,24 @@ app.layout = html.Div(id="page", children=[
                                          {'label': 'diagonal stripes', 'value': 1},
                                          {'label': 'chessboard', 'value': 2},
                                          {'label': 'circle', 'value': 3},
-                                         {'label': 'random', 'value': 4}
+                                         {'label': 'random', 'value': 4},
+                                         {'label': 'ring', 'value': 5},
+                                         {'label': 'solid', 'value': 6}
                                      ],
                                      value=4)]),
                     html.Div(id="right_params", children=[
                         html.Label('N = ', id='N_label'),
-                        dcc.Input(id="N", value=25, type="number"),
+                        dcc.Input(id="N", value=25, type="number", min=5, max=200),
                         html.Label('q = ', id='q_label'),
-                        dcc.Input(id="q", value=3, type="number"),
+                        dcc.Input(id="q", value=3, type="number", min=1, max=8),
                         html.Label('p = ', id='p_label'),
-                        dcc.Input(id="p", value=0.5, type="number"),
+                        dcc.Input(id="p", value=0.5, type="number", min=0, max=1),
                         html.Label('f = ', id='f_label'),
-                        dcc.Input(id="f", value=0.4, type="number")]
+                        dcc.Input(id="f", value=0.4, type="number", min=0, max=1)]
                      )
                     ])
             ]
         ),
-        html.Div(id="footer_div", children=[
-            html.Footer("M.K", id="footer")
-        ])
 ]
 )
 
@@ -160,19 +165,19 @@ def update_interval(n):
               )
 def update_data(n1, n2, k, lattice, nonconformity, drawings, N, q, p, f, data):
     """
-
-    :param n1:
-    :param n2:
-    :param k:
-    :param lattice:
-    :param nonconformity:
-    :param drawings:
-    :param N:
-    :param q:
-    :param p:
-    :param f:
-    :param data:
-    :return:
+    Update the graphs.
+    :param n1: number of run / stop button clicks (int)
+    :param n2: number of setup button clicks (int)
+    :param k: interval (int)
+    :param lattice: current lattice with agents (np.ndarray)
+    :param nonconformity: specifies the type of nonconformity (boolean)
+    :param drawings: specifies the type of drawings (boolean)
+    :param N: size of the lattice (int)
+    :param q: number of drawn neighbours (int)
+    :param p: probability of nonconformity (float)
+    :param f: probability of spin-flip if independence
+    :param data: current data stored in dcc.Store
+    :return: updated data
     """
     if n1 == 0 and n2 == 0:
         raise PreventUpdate
@@ -181,10 +186,10 @@ def update_data(n1, n2, k, lattice, nonconformity, drawings, N, q, p, f, data):
     data1, X, Y = data
     if button_id == "setup":
         X = list([0])
-        Y = list([0])
         func = lattices[lattice]
         data2 = func(N)
-        return (dict(z=[data2]), 0, N), (dict(x=[[0]], y=[[0]]), [0], len(X)), (data2, X, Y)
+        Y = list([np.mean(data2)])
+        return (dict(z=[data2]), 0, N), (dict(x=[[0]], y=[Y]), [0], len(X)), (data2, X, Y)
     if nonconformity == 0:
         data_2 = independence(data1, N, drawings, q, p, f)
     else:
