@@ -1,5 +1,7 @@
 # q-voter
 
+![Link to the website](https://q-voter-model.herokuapp.com/)
+
 Web application built with Python and Dash simulating the q-voter model evolution.
 
 If you are interested in how the q-voter model works, check out the `q_voter.pdf` file (in preparation).
