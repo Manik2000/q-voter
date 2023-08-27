@@ -14,6 +14,7 @@ lattices = [two_vertical_stripes, diagonal_stripes, chessboard, circle, random_l
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, assets_folder="assets", update_title=None)
+app.title = "Q-voter"
 server = app.server
 
 interval_time = 400
