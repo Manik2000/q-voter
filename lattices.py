@@ -1,28 +1,17 @@
 """
-@author: M.K
-different types of initial lattices
+Different types of initial lattices
 """
 import numpy as np
 
 
-def two_stripes(N):
-    """
-
-    :param N:
-    :return:
-    """
+def two_stripes(N: int):
     n = N // 2
     a = -np.ones((N, n))
     b = np.ones((N, N - n))
     return np.concatenate((a, b), axis=1)
 
 
-def diagonal_stripes(N):
-    """
-
-    :param N:
-    :return:
-    """
+def diagonal_stripes(N: int):
     vec = np.linspace(-1.5, 1.5, N)
     array1 = np.repeat(vec[None], N, axis=0)
     array2 = np.repeat(vec[None].T, N, axis=1)
@@ -31,12 +20,7 @@ def diagonal_stripes(N):
     return array
 
 
-def circle(N):
-    """
-
-    :param N:
-    :return:
-    """
+def circle(N: int):
     vec = np.linspace(-1.5, 1.5, N)
     array1 = np.repeat(vec[None], N, axis=0)
     array2 = np.repeat(vec[None].T, N, axis=1)
@@ -45,12 +29,7 @@ def circle(N):
     return array
 
 
-def ring(N):
-    """
-
-    :param N:
-    :return:
-    """
+def ring(N: int):
     vec = np.linspace(-1.5, 1.5, N)
     array1 = np.repeat(vec[None], N, axis=0)
     array2 = np.repeat(vec[None].T, N, axis=1)
@@ -59,28 +38,13 @@ def ring(N):
     return array
 
 
-def chessboard(N):
-    """
-
-    :param N:
-    :return:
-    """
+def chessboard(N: int):
     return 2 * (np.indices([N, N]).sum(axis=0) % 2) - 1
 
 
-def random_lattice(N):
-    """
-
-    :param N:
-    :return:
-    """
+def random_lattice(N: int):
     return np.random.choice([-1, 1], (N, N))
 
 
-def solid(N):
-    """
-
-    :param N:
-    :return:
-    """
+def solid(N: int):
     return np.ones((N, N))
