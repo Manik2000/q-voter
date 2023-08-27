@@ -1,20 +1,20 @@
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
-import plotly.graph_objects as go
 import numpy as np
-from dash.dependencies import Output, Input, State
-from simulation import independence, anti_conformity
+import plotly.graph_objects as go
+from dash import dcc, html
+from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
-from lattices import circle, diagonal_stripes, chessboard, random_lattice, two_stripes, solid, ring
+
+from scripts.lattices import (chessboard, circle, diagonal_stripes, random_lattice,
+                      ring, solid, two_vertical_stripes)
+from scripts.simulation import anti_conformity, independence
 
 
-lattices = [two_stripes, diagonal_stripes, chessboard, circle, random_lattice, ring, solid]
+lattices = [two_vertical_stripes, diagonal_stripes, chessboard, circle, random_lattice, ring, solid]
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, assets_folder="assets", update_title=None)
 server = app.server
-
 
 interval_time = 400
 fig = go.Figure(data=go.Heatmap(z=random_lattice(25), zmin=-1, zmax=1, showscale=False,
@@ -61,9 +61,11 @@ fig2.update_yaxes(
     zerolinewidth=1.5,
     zerolinecolor='DarkBlue'
 )
+
 fig2.update_xaxes(zeroline=True,
                   zerolinewidth=1.5,
                   zerolinecolor='DarkBlue')
+
 
 app.layout = html.Div(id="page", children=[
         html.Div(

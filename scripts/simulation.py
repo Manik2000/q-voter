@@ -1,3 +1,7 @@
+"""
+Functions performing Q-voter model simluations.
+There are two variants of the model: independence and anti-conformity.
+"""
 import numpy as np
 
 
@@ -12,7 +16,7 @@ def independence(lattice, L, replacement, q, p, f):
     :param f: probability of spin-flip if independence (float)
     :return: final lattice with agents after L steps (np.ndarray)
     """
-    for k in range(L):
+    for _ in range(L):
         i, j = np.random.randint(0, L, 2)
         agent = lattice[i][j]
         U = np.random.rand()
@@ -47,7 +51,7 @@ def anti_conformity(lattice, L, replacement, q, p):
     :param p: the probability of anti-conformity (float)
     :return: the lattice after transitions (np.ndarray)
     """
-    for k in range(L):
+    for _ in range(L):
         i, j = np.random.randint(0, L, 2)
         neighbours = [lattice[i][(j + 1) % L], lattice[i][(j - 1) % L], lattice[(i + 1) % L][j],
                       lattice[(i - 1) % L][j]]
