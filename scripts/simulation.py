@@ -4,8 +4,10 @@ There are two variants of the model: independence and anti-conformity.
 """
 import numpy as np
 
+from scripts.checkers import *
 
-def independence(lattice, L, replacement, q, p, f):
+
+def independence(lattice: np.ndarray, L: int, replacement: bool, q: int, p: float, f:float) -> np.ndarray:
     """
     Simulate the independence q-voter model on a square lattice.
     :param lattice: lattice with agents (np.array)
@@ -16,6 +18,11 @@ def independence(lattice, L, replacement, q, p, f):
     :param f: probability of spin-flip if independence (float)
     :return: final lattice with agents after L steps (np.ndarray)
     """
+    is_positive_integer(L)
+    is_probability(p)
+    is_probability(f)
+    is_bool(replacement)
+    is_proper_q(q)
     for _ in range(L):
         i, j = np.random.randint(0, L, 2)
         agent = lattice[i][j]
@@ -24,8 +31,8 @@ def independence(lattice, L, replacement, q, p, f):
             if np.random.rand() < f:
                 lattice[i][j] = -agent
         else:
-            neighbours = [lattice[i][(j + 1) % L], lattice[i][(j - 1) % L], lattice[(i + 1) % L][j],
-                          lattice[(i - 1) % L][j]]
+            neighbours = [lattice[i][(j + 1) % L], lattice[i][(j - 1) % L],
+                          lattice[(i + 1) % L][j], lattice[(i - 1) % L][j]]
             if replacement:
                 indexes = np.random.randint(0, 3, size=q)
                 chosen = [neighbours[i] for i in indexes]
@@ -41,7 +48,7 @@ def independence(lattice, L, replacement, q, p, f):
     return lattice
 
 
-def anti_conformity(lattice, L, replacement, q, p):
+def anti_conformity(lattice: np.ndarray, L: int, replacement: bool, q: int, p:float) -> np.ndarray:
     """
     Simulate the anti-conformity q-voter model on a square lattice.
     :param lattice: lattice with agents (np.ndarray)
@@ -51,10 +58,14 @@ def anti_conformity(lattice, L, replacement, q, p):
     :param p: the probability of anti-conformity (float)
     :return: the lattice after transitions (np.ndarray)
     """
+    is_positive_integer(L)
+    is_probability(p)
+    is_bool(replacement)
+    is_proper_q(q)
     for _ in range(L):
         i, j = np.random.randint(0, L, 2)
-        neighbours = [lattice[i][(j + 1) % L], lattice[i][(j - 1) % L], lattice[(i + 1) % L][j],
-                      lattice[(i - 1) % L][j]]
+        neighbours = [lattice[i][(j + 1) % L], lattice[i][(j - 1) % L], 
+                      lattice[(i + 1) % L][j], lattice[(i - 1) % L][j]]
         if replacement:
             indexes = np.random.randint(0, 3, q)
             chosen = [neighbours[i] for i in indexes]

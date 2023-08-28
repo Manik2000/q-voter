@@ -1,3 +1,8 @@
+"""
+Dash app for q-voter model simulation.
+Run the app using `python app.py` command.
+Alternatively, you can use visit https://q-voter-simulation.onrender.com/ to see the app in action.
+"""
 import dash
 import numpy as np
 import plotly.graph_objects as go
@@ -103,10 +108,10 @@ app.layout = html.Div(id="page", children=[
                         html.Label("Choose the way of drawings", id="drawings_label"),
                         dcc.Dropdown(id="drawings_dropdown",
                                      options=[
-                                         {'label': 'drawings with replacement', 'value': 1},
-                                         {'label': 'drawings without replacement', 'value': 0}
+                                         {'label': 'drawings with replacement', 'value': True},
+                                         {'label': 'drawings without replacement', 'value': False}
                                      ],
-                                     value=1
+                                     value=True
                                      ),
                         html.Label("Choose the type of the lattice", id="lattice_label"),
                         dcc.Dropdown(id='lattice_dropdown',
@@ -124,7 +129,7 @@ app.layout = html.Div(id="page", children=[
                         html.Label('N = ', id='N_label'),
                         dcc.Input(id="N", value=25, type="number", min=5, max=200),
                         html.Label('q = ', id='q_label'),
-                        dcc.Input(id="q", value=3, type="number", min=1, max=8),
+                        dcc.Input(id="q", value=3, type="number", min=1, max=4),
                         html.Label('p = ', id='p_label'),
                         dcc.Input(id="p", value=0.5, type="number", min=0, max=1),
                         html.Label('f = ', id='f_label'),

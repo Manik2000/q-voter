@@ -8,6 +8,16 @@ A Dash web application with simulation of evolution of Q-voter model with two ki
 
 ## Q-voter model
 
+Q-voter model is a model of binary opinion dynamics (agent opinion is either $+1$ or $-1$). Each agent (a member of some society) can be influenced by their $q$ neighbours. If the neighbours' opinion are consistent, then the agent adopts this opinion. Otherwise, the agents keeps their opinion.
+
+However, some we can introduce some agent behaviours:
+* **anti-conformity** &mdash; if the neighbours' opinions are consistent, then the agent adopts the opposite opinion with some probabilty $p$,
+* **independence** &mdash; the agent becomes independent with probability $p$ and flips its opinon with probability $f$.
+
+In this app q-voter model evolution is simulated on a square lattice with periodic boundary conditions. There are different kinds of lattices &mdash; see image below.
+
+![](assets/lattices.png)
+
 ## Structure
 
 ```
@@ -15,7 +25,6 @@ A Dash web application with simulation of evolution of Q-voter model with two ki
 ├── LICENSE
 ├── README.md
 ├── .gitignore
-├── analysis.ipynb <- notebook with analysis of model
 ├── app.py <- contains Dash app layout and logic
 └── scripts/
     ├── lattice.py <- contains functions for generating initial lattices
